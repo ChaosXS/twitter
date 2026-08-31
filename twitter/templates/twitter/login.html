@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrar no X / Twitter</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #000; color: #e7e9ea; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .login-card { width: 100%; max-width: 440px; padding: 40px; background: #000; border: 1px solid #2f3336; border-radius: 16px; display: flex; flex-direction: column; gap: 20px; }
+        .logo { font-size: 36px; font-weight: 800; color: #fff; text-align: center; }
+        h2 { font-size: 24px; font-weight: 700; color: #fff; text-align: center; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+        label { font-size: 13px; color: #71767b; font-weight: 600; }
+        input { width: 100%; background: #000; border: 1px solid #2f3336; padding: 12px; border-radius: 8px; color: #fff; font-size: 15px; outline: none; }
+        input:focus { border-color: #1d9bf0; }
+        .errorlist { color: #f4212e; font-size: 13px; list-style: none; margin-bottom: 12px; background: rgba(244, 33, 46, 0.1); padding: 10px; border-radius: 8px; }
+        .btn-submit { background: #eff3f4; color: #0f1419; border: none; padding: 12px; border-radius: 9999px; font-weight: 700; font-size: 15px; cursor: pointer; width: 100%; transition: background 0.2s; margin-top: 10px; }
+        .btn-submit:hover { background: #d7dbdc; }
+        .signup-link { text-align: center; font-size: 14px; color: #71767b; margin-top: 4px; }
+        .signup-link a { color: #1d9bf0; text-decoration: none; }
+        .signup-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">𝕏</div>
+        <h2>Entrar no X</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label>Nome de usuário</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>Senha</label>
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn-submit">Avançar</button>
+        </form>
+        <div class="signup-link">
+            Não tem uma conta? <a href="{% url 'signup' %}">Inscreva-se</a>
+        </div>
+    </div>
+</body>
+</html>

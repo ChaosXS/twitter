@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Página Inicial / X</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #000000; color: #e7e9ea; display: flex; justify-content: center; }
+        .layout-container { display: flex; width: 100%; max-width: 1265px; height: 100vh; }
+        .sidebar-left { width: 275px; display: flex; flex-direction: column; justify-content: space-between; padding: 0 10px; border-right: 1px solid #2f3336; height: 100vh; position: sticky; top: 0; }
+        .nav-logo { font-size: 32px; font-weight: 800; padding: 12px; color: #fff; margin-bottom: 5px; }
+        .nav-menu { display: flex; flex-direction: column; gap: 4px; }
+        .nav-item { display: flex; align-items: center; gap: 20px; color: #e7e9ea; text-decoration: none; font-size: 20px; padding: 12px 16px; border-radius: 9999px; width: fit-content; transition: background 0.2s; }
+        .nav-item:hover { background-color: #181818; }
+        .nav-item.active { font-weight: 700; }
+        .sidebar-user { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 9999px; margin-bottom: 12px; }
+        .user-mini-info { display: flex; align-items: center; gap: 10px; }
+        .mini-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #333; }
+        .mini-names .name { font-size: 15px; font-weight: 700; color: #fff; }
+        .mini-names .username { font-size: 14px; color: #71767b; }
+        .btn-logout-mini { background: transparent; border: none; color: #f4212e; font-weight: bold; cursor: pointer; font-size: 14px; }
+        
+        .feed-main { width: 600px; border-right: 1px solid #2f3336; min-height: 100vh; overflow-y: auto; }
+        .feed-header { padding: 16px; border-bottom: 1px solid #2f3336; position: sticky; top: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(12px); z-index: 10; }
+        .feed-header h2 { font-size: 20px; font-weight: 700; color: #fff; }
+        
+        .tweet-box { padding: 16px; border-bottom: 1px solid #2f3336; }
+        .tweet-box textarea { width: 100%; background: transparent; border: none; color: #fff; font-size: 18px; resize: none; outline: none; min-height: 80px; }
+        .btn-tweet { background: #1d9bf0; color: #fff; border: none; padding: 10px 20px; border-radius: 9999px; font-weight: 700; cursor: pointer; font-size: 15px; }
+        .btn-tweet:hover { background: #1a8cd8; }
+
+        .post-card { display: flex; padding: 12px 16px; border-bottom: 1px solid #2f3336; gap: 12px; }
+        .post-body { flex: 1; }
+        .post-meta { display: flex; gap: 6px; align-items: center; margin-bottom: 4px; }
+        .post-author-name { font-weight: 700; font-size: 15px; color: #fff; text-decoration: none; }
+        .post-author-name:hover { text-decoration: underline; }
+        .post-author-username, .post-time { color: #71767b; font-size: 14px; }
+        .post-text { font-size: 15px; line-height: 1.5; color: #e7e9ea; margin-bottom: 12px; }
+        .post-media { width: 100%; border-radius: 16px; max-height: 400px; object-fit: cover; margin-top: 4px; border: 1px solid #2f3336; margin-bottom: 12px; }
+        
+        .post-actions { display: flex; gap: 20px; margin-top: 10px; font-size: 13px; color: #71767b; align-items: center; }
+        .post-actions a { color: #71767b; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+        .post-actions a:hover { color: #1d9bf0; }
+        .comment-section { margin-top: 12px; border-top: 1px solid #2f3336; padding-top: 8px; }
+        .comment-item { font-size: 13px; margin-bottom: 6px; color: #e7e9ea; }
+        .comment-item span { font-weight: 700; color: #fff; }
+
+        .sidebar-right { width: 350px; padding: 12px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .suggestions-box { background: #16181c; border: 1px solid #2f3336; border-radius: 16px; padding: 16px; }
+        .suggestions-box h3 { font-size: 18px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+        .suggestion-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .suggestion-user { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+        .suggestion-names .name { font-size: 14px; font-weight: 700; color: #fff; }
+        .suggestion-names .username { font-size: 13px; color: #71767b; }
+        .btn-follow { background: #eff3f4; color: #0f1419; border: none; padding: 6px 16px; border-radius: 9999px; font-weight: 700; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .btn-follow:hover { background: #d7dbdc; }
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        <aside class="sidebar-left">
+            <div>
+                <div class="nav-logo">𝕏</div>
+                <nav class="nav-menu">
+                    <a href="{% url 'feed' %}" class="nav-item active">🏠 Página Inicial</a>
+                    <a href="{% url 'perfil' %}" class="nav-item">👤 Perfil</a>
+                </nav>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-mini-info">
+                    <img src="{{ perfil.foto_perfil }}" class="mini-avatar" alt="Avatar">
+                    <div class="mini-names">
+                        <div class="name">{{ request.user.first_name|default:request.user.username }}</div>
+                        <div class="username">@{{ request.user.username }}</div>
+                    </div>
+                </div>
+                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout-mini">Sair</button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="feed-main">
+            <div class="feed-header">
+                <h2>Página Inicial</h2>
+            </div>
+
+            <div class="tweet-box">
+                <form action="{% url 'criar_post' %}" method="POST">
+                    {% csrf_token %}
+                    <textarea name="conteudo" placeholder="O que está acontecendo?!" required></textarea>
+                    <input type="text" name="imagem" placeholder="Link da imagem (opcional)" style="width: 100%; margin-top: 8px; background: #000; border: 1px solid #2f3336; padding: 8px; border-radius: 8px; color: #fff; font-size: 14px; outline: none;">
+                    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                        <button type="submit" class="btn-tweet">Postar</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="posts-feed">
+                {% for post in posts %}
+                <article class="post-card">
+                    <img src="{{ post.autor.profile.foto_perfil }}" class="mini-avatar" alt="Avatar">
+                    <div class="post-body">
+                        <div class="post-meta">
+                            <a href="{% url 'detalhe_usuario' post.autor.username %}" class="post-author-name">
+                                {{ post.autor.first_name|default:post.autor.username }}
+                            </a>
+                            <span class="post-author-username">@{{ post.autor.username }}</span>
+                            <span class="post-time">· {{ post.criado_em|timesince }}</span>
+                        </div>
+                        <div class="post-text">{{ post.conteudo }}</div>
+                        {% if post.imagem %}
+                            <img src="{{ post.imagem }}" class="post-media" alt="Mídia do post">
+                        {% endif %}
+
+                        <div class="post-actions">
+                            <a href="{% url 'curtir_post' post.id %}">
+                                {% if request.user in post.curtidas.all %}❤️{% else %}🤍{% endif %} {{ post.curtidas.count }}
+                            </a>
+                        </div>
+
+                        <div class="comment-section">
+                            {% for comentario in post.comentarios.all %}
+                            <div class="comment-item">
+                                <span>@{{ comentario.autor.username }}:</span> {{ comentario.conteudo }}
+                            </div>
+                            {% endfor %}
+                            <form action="{% url 'comentar_post' post.id %}" method="POST" style="margin-top: 8px; display: flex; gap: 8px;">
+                                {% csrf_token %}
+                                <input type="text" name="conteudo" placeholder="Postar sua resposta" required style="flex: 1; background: #000; border: 1px solid #2f3336; padding: 6px 10px; border-radius: 9999px; color: #fff; font-size: 13px; outline: none;">
+                                <button type="submit" style="background: #1d9bf0; color: #fff; border: none; padding: 6px 12px; border-radius: 9999px; font-weight: 700; font-size: 12px; cursor: pointer;">Responder</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <div style="text-align: center; color: #71767b; margin-top: 40px; padding: 20px;">
+                    <p style="font-size: 18px; font-weight: 700; color: #fff;">Seu feed está vazio!</p>
+                    <p style="font-size: 14px; margin-top: 8px;">Siga outros usuários pela barra lateral ou faça uma postagem para começar.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="suggestions-box">
+                <h3>Quem seguir</h3>
+                {% for sugestao in sugestoes %}
+                <div class="suggestion-item">
+                    <a href="{% url 'detalhe_usuario' sugestao.user.username %}" class="suggestion-user">
+                        <img src="{{ sugestao.foto_perfil }}" class="mini-avatar" alt="Avatar">
+                        <div class="suggestion-names">
+                            <div class="name">{{ sugestao.user.first_name|default:sugestao.user.username }}</div>
+                            <div class="username">@{{ sugestao.user.username }}</div>
+                        </div>
+                    </a>
+                    <a href="{% url 'seguir_usuario' sugestao.user.id %}" class="btn-follow">Seguir</a>
+                </div>
+                {% empty %}
+                <p style="color: #71767b; font-size: 14px;">Nenhuma sugestão no momento.</p>
+                {% endfor %}
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

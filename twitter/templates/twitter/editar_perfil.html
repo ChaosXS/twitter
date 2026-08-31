@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Perfil / X</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #000; color: #e7e9ea; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .edit-container { width: 100%; max-width: 500px; padding: 30px; background: #000; border: 1px solid #2f3336; border-radius: 16px; display: flex; flex-direction: column; gap: 20px; }
+        h2 { font-size: 22px; font-weight: 700; color: #fff; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 13px; color: #71767b; font-weight: 600; }
+        input, textarea { width: 100%; background: #000; border: 1px solid #2f3336; padding: 10px; border-radius: 8px; color: #fff; font-size: 15px; outline: none; }
+        textarea { resize: none; height: 100px; }
+        input:focus, textarea:focus { border-color: #1d9bf0; }
+        .btn-save { background: #eff3f4; color: #0f1419; border: none; padding: 12px; border-radius: 9999px; font-weight: 700; font-size: 15px; cursor: pointer; text-align: center; text-decoration: none; }
+        .btn-save:hover { background: #d7dbdc; }
+    </style>
+</head>
+<body>
+    <div class="edit-container">
+        <h2>Editar perfil</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Nome</label>
+                <input type="text" name="first_name" value="{{ request.user.first_name }}">
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Link da Foto de Perfil</label>
+                <input type="url" name="foto_perfil" value="{{ perfil.foto_perfil }}">
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label>Bio</label>
+                <textarea name="bio">{{ perfil.bio }}</textarea>
+            </div>
+            <button type="submit" class="btn-save" style="width: 100%;">Salvar</button>
+        </form>
+    </div>
+</body>
+</html>
